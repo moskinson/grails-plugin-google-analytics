@@ -6,10 +6,14 @@ class GoogleAnalyticsGrailsPlugin {
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
-
+    def license = "APACHE"
     def title = "Grails Google Analytics Plugin" 
-    def author = "Marcel Overdijk, Javier Moscardó"
-    def authorEmail = "marceloverdijk@gmail.com, moskinson@gmail.com"
+    def author = "Marcel Overdijk"
+    def authorEmail = "marceloverdijk@gmail.com"
+    def developers = [
+            [ name: "Javier Moscardó", email: "moskinson@gmail.com" ] ]
+            
+    def scm = [ url: "https://github.com/moskinson/grails-plugin-google-analytics" ]
     def description = '''
                 Include google analyics script
     '''
