@@ -1,0 +1,23 @@
+<plugin name='google-analytics' version='0.2' grailsVersion='2.0 &gt; *'>
+  <author>Marcel Overdijk, Javier Moscardó</author>
+  <authorEmail>marceloverdijk@gmail.com, moskinson@gmail.com</authorEmail>
+  <title>Grails Google Analytics Plugin</title>
+  <description>
+                Include google analyics script
+    </description>
+  <documentation>http://grails.org/plugin/google-analytics</documentation>
+  <type>GoogleAnalyticsGrailsPlugin</type>
+  <resources>
+    <resource>GoogleAnalyticsTagLib</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://plugins.grails.org' />
+    <repository name='http://repo.grails.org/grails/plugins' url='http://repo.grails.org/grails/plugins/' />
+    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
+    <repository name='grailsCore' url='http://svn.codehaus.org/grails/trunk/grails-plugins' />
+  </repositories>
+  <dependencies />
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>
