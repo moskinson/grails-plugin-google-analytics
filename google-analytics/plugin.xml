@@ -1,6 +1,6 @@
-<plugin name='google-analytics' version='0.2' grailsVersion='2.0 &gt; *'>
-  <author>Marcel Overdijk, Javier Moscardó</author>
-  <authorEmail>marceloverdijk@gmail.com, moskinson@gmail.com</authorEmail>
+<plugin name='google-analytics' version='1.0' grailsVersion='2.0 &gt; *'>
+  <author>Marcel Overdijk</author>
+  <authorEmail>marceloverdijk@gmail.com</authorEmail>
   <title>Grails Google Analytics Plugin</title>
   <description>
                 Include google analyics script

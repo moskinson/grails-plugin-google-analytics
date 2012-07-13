@@ -1,0 +1,7 @@
+google-analytics/.settings
+google-analytics/target
+google-analytics/target-eclipse
+.project
+.classpath
+.idea
+out
