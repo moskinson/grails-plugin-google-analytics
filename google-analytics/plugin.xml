@@ -1,4 +1,4 @@
-<plugin name='google-analytics' version='1.0' grailsVersion='2.0 &gt; *'>
+<plugin name='google-analytics' version='2.0' grailsVersion='2.0 &gt; *'>
   <author>Marcel Overdijk</author>
   <authorEmail>marceloverdijk@gmail.com</authorEmail>
   <title>Grails Google Analytics Plugin</title>
