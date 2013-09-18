@@ -20,9 +20,9 @@ class GoogleAnalyticsTagLib {
             out << """
 <script type="text/javascript">
     var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${getWebPropertyID()}']);"""
+    _gaq.push(['_setAccount', '${webPropertyID()}']);"""
             
-            def customTrackingCode = attrs?.customTrackingCode ?: grailsApplication.config.google.analytics.customTrackingCode
+            def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()
             if (customTrackingCode instanceof String) {
                 out << """
     ${customTrackingCode}"""
@@ -82,7 +82,7 @@ class GoogleAnalyticsTagLib {
 </script>
 <script type="text/javascript">
     try {
-        var pageTracker = _gat._getTracker("${getWebPropertyID()}");
+        var pageTracker = _gat._getTracker("${webPropertyID()}");
         pageTracker._trackPageview();
     }
     catch (err) {
@@ -92,23 +92,35 @@ class GoogleAnalyticsTagLib {
     }
 
     private isEnabled() {
-        def enabled = grailsApplication.config.google.analytics.enabled
         
-        // disable google analytics if web property id is not defined 
-        if (!getWebPropertyID()) {
-            enabled = false
-        }
-        else { 
-            // enable google analytics by default for production environment        
-            if (!(enabled instanceof Boolean) && Environment.current == Environment.PRODUCTION) {
-                enabled = true
-            }
+        if (!webPropertyID()) {
+            return false
         }
 
-        return enabled
+        if ( isInvalidEnabledByConfig() && areInProduction() ) {
+            return true
+        }
+
+        return isEnabledByConfig()
     }
 
-    private getWebPropertyID() {
-        return grailsApplication.config.google.analytics.webPropertyID
+    private isInvalidEnabledByConfig(){
+        !(isEnabledByConfig() instanceof Boolean)
+    }
+
+    private areInProduction(){
+        Environment.current == Environment.PRODUCTION
+    }
+
+    private webPropertyID() {
+        grailsApplication.config.google.analytics.webPropertyID
+    }
+
+    private isEnabledByConfig(){
+        grailsApplication.config.google.analytics.enabled
+    }
+
+    private trackingCode(){
+        grailsApplication.config.google.analytics.customTrackingCode
     }
 }
