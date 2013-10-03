@@ -4,6 +4,14 @@ class GoogleAnalyticsTagLib {
 
     static namespace = "ga"
 
+    static final MAIN_TRACKING_CODE = """
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();"""
+
+
     def grailsApplication
 
     def trackPageview = { attrs ->
@@ -20,7 +28,7 @@ class GoogleAnalyticsTagLib {
             out << """
 <script type="text/javascript">
     var _gaq = _gaq || [];
-    \$(function() {
+    ${loadWithJQueryRomReady()}
     _gaq.push(['_setAccount', '${webPropertyID()}']);"""
             
             def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()
@@ -61,21 +69,14 @@ class GoogleAnalyticsTagLib {
     _gaq.push(['_trackPageview']);"""
             }
 
-            out << """});
-    
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-    })();
+            out << """${closeLoadWithJQueryRomReady()}
+    $MAIN_TRACKING_CODE                    
 </script>"""
         }
     }
 
     def trackPageviewTraditional = { attrs ->
-		if (isEnabled()) {
+        if (isEnabled()) {
             out << render (template: '/traditionalTrackingCode',
                            model: [webPropertyID: webPropertyID()],
                            plugin: 'google-analytics')
@@ -113,5 +114,17 @@ class GoogleAnalyticsTagLib {
 
     private trackingCode(){
         grailsApplication.config.google.analytics.customTrackingCode
+    }
+
+    private loadWithJQueryRomReady(){
+        withJQueryDomReady()? '$(function() {' : ''
+    }
+
+    private closeLoadWithJQueryRomReady(){
+        withJQueryDomReady()? '});' : ''
+    }
+
+    private withJQueryDomReady(){
+        grailsApplication.config.google.analytics.jQueryDomReady
     }
 }
