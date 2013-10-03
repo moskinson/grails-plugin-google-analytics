@@ -12,20 +12,18 @@ class GoogleAnalyticsTagLibTests {
    static expectedAsynch = """
 <script type="text/javascript">
     var _gaq = _gaq || [];
+
     _gaq.push(['_setAccount', '${webPropertyID}']);
     _gaq.push(['_trackPageview']);
     
     (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 </script>"""
 
-    static expectedTraditional = """
-<script type="text/javascript">
+    static expectedTraditional = """<script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
@@ -61,7 +59,8 @@ class GoogleAnalyticsTagLibTests {
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables([enabled : true])
 
-        assert tagLib.trackPageviewAsynch().toString() == expectedAsynch
+        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
+
     }
 
     void testTrackPageviewAsynchDefaultDisabledInTest() {
@@ -75,14 +74,14 @@ class GoogleAnalyticsTagLibTests {
         setEnvironment(Environment.TEST)
         setConfigVariables([enabled : true])
 
-        assert tagLib.trackPageviewAsynch().toString() == expectedAsynch
+        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchDefaultEnabledInProduction() {
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables()
 
-        assert tagLib.trackPageviewAsynch().toString() == expectedAsynch
+        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchExplicitlyDisabledInProduction() {
@@ -95,7 +94,7 @@ class GoogleAnalyticsTagLibTests {
     void testTrackPageviewAsynchEnabled() {
         setConfigVariables([enabled : true])
 
-        assert tagLib.trackPageviewAsynch().toString() == expectedAsynch
+        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchDisabled() {
@@ -111,73 +110,45 @@ class GoogleAnalyticsTagLibTests {
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttr() {
+        
         setConfigVariables([enabled : true])
 
-        def expected = """
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${webPropertyID}']);
-    customTrackingCode();
-    
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-    })();
-</script>"""
+        def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString()
+         
 
-        assert tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString() == expected
+        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        assert  ga_tracking_code.contains("customTrackingCode();")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsListAttr() {
+        
         setConfigVariables([enabled : true])
 
-        def expected = """
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${webPropertyID}']);
-    _gaq.push(['_setClientInfo', true]);
-    _gaq.push(['_setDetectFlash', false]);
-    _gaq.push(['_setCampaignCookieTimeout', 31536000000]);
-    _gaq.push(['custom', 'value']);
-    _gaq.push(['_trackPageview']);
-    
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-    })();
-</script>"""
+        def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString()
 
-        assert tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString() == expected
+        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
+        assert  ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
+        assert  ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttrInConfig() {
+        
         setConfigVariables([enabled : true, customTrackingCode : "customTrackingCode();"])
 
-        def expected = """
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${webPropertyID}']);
-    customTrackingCode();
-    
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-    })();
-</script>"""
+        def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString()
 
-        assert tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString() == expected
+        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        assert  ga_tracking_code.contains("customTrackingCode();")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsListAttrInConfig() {
+        
         setConfigVariables([enabled : true,
                             customTrackingCode : [
                                         _setDetectFlash: true,
@@ -186,28 +157,28 @@ class GoogleAnalyticsTagLibTests {
                                         'custom': 'value',
                                         _trackPageview: null
                                     ]])
-       
+        
+        def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString()
 
-        def expected = """
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${webPropertyID}']);
-    _gaq.push(['_setClientInfo', true]);
-    _gaq.push(['_setDetectFlash', false]);
-    _gaq.push(['_setCampaignCookieTimeout', 31536000000]);
-    _gaq.push(['custom', 'value']);
-    _gaq.push(['_trackPageview']);
-    
-    (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-    })();
-</script>"""
+        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
+        assert  ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
+        assert  ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
+        assert  ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
+    }
 
-        assert tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString() == expected
+    void "test trackPageView by default does not load jqueryDomReady"() {
+        setConfigVariables([enabled: true])
+
+        assert !tagLib.trackPageviewAsynch().contains('$(function() {')
+    }
+
+    void "test trackPageView load when dom is ready"() {
+        setConfigVariables([enabled: true, jQueryDomReady: true ])
+
+        assert tagLib.trackPageviewAsynch().contains('$(function() {')
     }
 
     // *****************************************************
@@ -285,5 +256,9 @@ class GoogleAnalyticsTagLibTests {
             google: [
                 analytics:[ webPropertyID : "${webPropertyID}"] + customParams
             ]]
+    }
+    
+    private deleteBlankSpaces(text_to_clean){
+        text_to_clean.trim().replace(' ','')
     }
 }
