@@ -20,6 +20,7 @@ class GoogleAnalyticsTagLib {
             out << """
 <script type="text/javascript">
     var _gaq = _gaq || [];
+    \$(function() {
     _gaq.push(['_setAccount', '${webPropertyID()}']);"""
             
             def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()
@@ -60,7 +61,7 @@ class GoogleAnalyticsTagLib {
     _gaq.push(['_trackPageview']);"""
             }
 
-            out << """
+            out << """});
     
     (function() {
         var ga = document.createElement('script');
