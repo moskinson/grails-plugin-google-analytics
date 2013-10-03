@@ -28,4 +28,10 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.5'
     }
 
+    plugins {
+       build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+          export = false
+       }
+    }
+
 }
