@@ -77,7 +77,8 @@ class GoogleAnalyticsTagLib {
     def trackPageviewTraditional = { attrs ->
 		if (isEnabled()) {
             out << render (template: '/traditionalTrackingCode',
-                           model: [webPropertyID: webPropertyID()])
+                           model: [webPropertyID: webPropertyID()],
+                           plugin: 'google-analytics')
         }
     }
 
