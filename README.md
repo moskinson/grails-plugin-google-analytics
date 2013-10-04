@@ -133,6 +133,8 @@ Note that you can also provide a similar List to the tag itself as in the other 
 
 ## TO DO
 * Improve custom vars, control slots usage...
+* Support for universal analytics code
+* Add Spock test to customvars
 
 
 ## Version History
