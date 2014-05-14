@@ -112,7 +112,7 @@ class GoogleAnalyticsTraditionalTests {
                         webPropertyID: ['UA-123456-1']
                             ])
 
-        def ga_tracking_code = tagLib.trackPageviewAsynch( webPropertyID: 'UA-123456-2')
+        def ga_tracking_code = tagLib.trackPageviewTraditional( webPropertyID: 'UA-123456-2')
 
         assert ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
     }
