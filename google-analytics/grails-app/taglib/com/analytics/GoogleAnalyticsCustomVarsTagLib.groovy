@@ -7,15 +7,16 @@ class GoogleAnalyticsCustomVarsTagLib extends BaseTagLib {
 	static final PAGE_SCOPE = 3
 
 	static namespace = "ga"
-	
-	def customVar = {attrs ->
 
-		out << customVarFor(attrs.slot,attrs.var_name, attrs.var_value,attrs.scope)
+	def customVar = {attrs ->
+		if (isEnabled()) {
+			out << customVarFor(attrs.slot,attrs.var_name, attrs.var_value,attrs.scope)
+		}
 	}
 
 	private customVarFor(slot_index,var_name,var_value,scope){
-		if (isEnabled()) {
-            out << render (template: '/traditionalTrackingCode',
+		
+            out << render (template: '/customVarCode',
             			   plugin: 'google-analytics',
                            model: [
                            	slot_index: slot_index,
@@ -23,7 +24,6 @@ class GoogleAnalyticsCustomVarsTagLib extends BaseTagLib {
                            	var_value: var_value,
                            	scope: scope
                            ])
-        }
 	}
 
 }
