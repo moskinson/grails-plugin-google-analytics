@@ -16,7 +16,7 @@ grails install-plugin google-analytics
 From Grails 2.0
 ```
 plugins {
-    compile ":google-analytics:2.1.1"
+    compile ":google-analytics:2.2.0"
 }
 ```
 
@@ -24,10 +24,21 @@ plugins {
 
 ### Add Web Property ID to Configuration
 
-Add your Web Property ID to grails-app/config/Config.groovy:
+##### Add your Web Property ID to grails-app/config/Config.groovy:
 
 ```
 google.analytics.webPropertyID = "UA-xxxxxx-x"
+```
+
+##### Add your list of Web Property ID to grails-app/config/Config.groovy for multiple accounts support:
+
+```
+google.analytics.webPropertyID = [ "UA-xxxxxx-x", "UA-xxxxxx-2", ""UA-xxxxxx-3" ] 
+```
+
+##### Setup your Web Property ID dynamically setting up as a tag attribute (Always a Web Property ID must be configure in the Config.groovy)
+```
+<ga:trackPageview webPropertyID="UA-xxxxxx-x" />
 ```
 
 
@@ -138,6 +149,12 @@ Note that you can also provide a similar List to the tag itself as in the other 
 
 
 ## Version History
+* **2.2.0**
+    * Support for a list of Web property ID in the Config.groovy
+    * Support for set up the Web property ID in the tag(Always a Web Property ID must be configure in the Config.groovy)
+    * Delete support for load tracking code when JqueryDom is ready
+    * Delete support for add custom var when JqueryDom is ready
+
 * **2.1.1**
 	* Support for custom vars
 	* Update main async tracking code
