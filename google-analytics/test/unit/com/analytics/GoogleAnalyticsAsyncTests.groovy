@@ -107,6 +107,17 @@ class GoogleAnalyticsAsyncTests {
         assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-3']);")
     }
 
+    void testTrackPageviewAsynchWithWebPropertyIDAsAttributte() {
+        setConfigVariables([
+                        enabled : true, 
+                        webPropertyID: ['UA-123456-1']
+                            ])
+
+        def ga_tracking_code = tagLib.trackPageviewAsynch( webPropertyID: 'UA-123456-2')
+
+        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
+    }
+
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttr() {
         
         setConfigVariables([enabled : true])

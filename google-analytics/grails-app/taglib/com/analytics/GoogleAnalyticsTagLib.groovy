@@ -16,14 +16,27 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
     }
 
     def trackPageviewAsynch = { attrs ->
-        if (isEnabled())
-            forEachWebPropertyIdDo(renderAsyncTrackingCodeFor(attrs?.customTrackingCode))
+        if (isEnabled()){
+            
+            if (attrs?.webPropertyID){
+                renderAsyncTrackingCodeFor(attrs)(attrs.webPropertyID)
+            }
+            else{
+                forEachWebPropertyIdDo(renderAsyncTrackingCodeFor(attrs))
+            }
+        }
     }
 
     def trackPageviewTraditional = { attrs ->
         
-        if (isEnabled()) 
-            forEachWebPropertyIdDo(renderTraditionalTrackingCodeFor)
+        if (isEnabled()){
+            if (attrs?.webPropertyID){
+                renderTraditionalTrackingCodeFor(attrs.webPropertyID)
+            }
+            else{
+                forEachWebPropertyIdDo(renderTraditionalTrackingCodeFor)
+            }
+        }
     }
 
     private forEachWebPropertyIdDo(closure){
@@ -39,7 +52,7 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
         }
     }
 
-    private renderAsyncTrackingCodeFor(custom_tracking_code){
+    private renderAsyncTrackingCodeFor(attrs){
 
         return { web_property_id ->
         out << """
@@ -48,7 +61,7 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
     
     _gaq.push(['_setAccount', '${web_property_id}']);"""
             
-        def customTrackingCode = custom_tracking_code ?: trackingCode()           
+        def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()           
 
         if (customTrackingCode){
             renderCustomTrackingCode(customTrackingCode)
