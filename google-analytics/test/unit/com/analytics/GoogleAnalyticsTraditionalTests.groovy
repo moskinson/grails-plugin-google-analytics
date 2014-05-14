@@ -92,6 +92,19 @@ class GoogleAnalyticsTraditionalTests {
         assert tagLib.trackPageviewTraditional() == ""
     }
 
+    void testTrackPageviewTraditionalWithWebPropertyIDList() {
+        setConfigVariables([
+                        enabled : true, 
+                        webPropertyID: ['UA-123456-1','UA-123456-2','UA-123456-3']
+                            ])
+
+        def ga_tracking_code = tagLib.trackPageviewTraditional()
+
+        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-1");')
+        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
+        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-3");')
+    }
+
     private setEnvironment(environment) {
         Environment.metaClass.static.getCurrent = { ->
             return environment

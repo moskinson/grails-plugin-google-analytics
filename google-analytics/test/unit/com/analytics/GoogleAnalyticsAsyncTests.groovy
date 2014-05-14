@@ -94,6 +94,19 @@ class GoogleAnalyticsAsyncTests {
         assert tagLib.trackPageviewAsynch() == ""
     }
 
+    void testTrackPageviewAsynchWithWebPropertyIDList() {
+        setConfigVariables([
+                        enabled : true, 
+                        webPropertyID: ['UA-123456-1','UA-123456-2','UA-123456-3']
+                            ])
+
+        def ga_tracking_code = tagLib.trackPageviewAsynch()
+
+        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-1']);")
+        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
+        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-3']);")
+    }
+
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttr() {
         
         setConfigVariables([enabled : true])

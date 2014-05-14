@@ -16,14 +16,39 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
     }
 
     def trackPageviewAsynch = { attrs ->
-        if (isEnabled()) {
-            out << """
+        if (isEnabled())
+            forEachWebPropertyIdDo(renderAsyncTrackingCodeFor(attrs?.customTrackingCode))
+    }
+
+    def trackPageviewTraditional = { attrs ->
+        
+        if (isEnabled()) 
+            forEachWebPropertyIdDo(renderTraditionalTrackingCodeFor)
+    }
+
+    private forEachWebPropertyIdDo(closure){
+
+        if (webPropertyID() instanceof List){
+
+            webPropertyID().each{ web_property_id ->
+                closure(web_property_id)
+            }
+        }
+        else{
+            closure(webPropertyID())
+        }
+    }
+
+    private renderAsyncTrackingCodeFor(custom_tracking_code){
+
+        return { web_property_id ->
+        out << """
 <script type="text/javascript">
     var _gaq = _gaq || [];
     
-    _gaq.push(['_setAccount', '${webPropertyID()}']);"""
+    _gaq.push(['_setAccount', '${web_property_id}']);"""
             
-        def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()           
+        def customTrackingCode = custom_tracking_code ?: trackingCode()           
 
         if (customTrackingCode){
             renderCustomTrackingCode(customTrackingCode)
@@ -41,12 +66,10 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
         }
     }
 
-    def trackPageviewTraditional = { attrs ->
-        if (isEnabled()) {
-            out << render (template: '/traditionalTrackingCode',
-                           plugin: 'google-analytics',
-                           model: [webPropertyID: webPropertyID()])
-        }
+    private renderTraditionalTrackingCodeFor = { web_property_id ->
+        out << render (template: '/traditionalTrackingCode',
+                       plugin: 'google-analytics',
+                       model: [webPropertyID: web_property_id])
     }
 
     private renderCustomTrackingCode(customTrackingCode){
