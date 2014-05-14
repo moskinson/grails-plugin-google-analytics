@@ -129,7 +129,7 @@ Note that you can also provide a similar List to the tag itself as in the other 
 <ga:trackPageview customTrackingCode="_gaq.push(['_setDetectFlash', false]); _gaq.push(['_trackPageview']); _gaq.push(['_trackPageLoadTime']);" />
 ```
 
-#### Custom to use Jquery for load GA when DOM is ready. Avoid bad position of ga tag ,such before css and JS making the site load with errors and slowly. (old version support, by default do not use dom ready)
+#### DEPRECATED: Custom to use Jquery for load GA when DOM is ready. Avoid bad position of ga tag ,such before css and JS making the site load with errors and slowly. (old version support, by default do not use dom ready)
 ```
 	grailsApplication.config.google.analytics.jQueryDomReady = true 
 ```
@@ -145,7 +145,6 @@ Note that you can also provide a similar List to the tag itself as in the other 
 ## TO DO
 * Improve custom vars, control slots usage...
 * Support for universal analytics code
-* Add Spock test to customvars
 
 
 ## Version History
