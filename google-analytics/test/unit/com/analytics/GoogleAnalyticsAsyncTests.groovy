@@ -1,3 +1,5 @@
+package com.analytics
+
 import grails.test.*
 import grails.util.Environment
 import grails.test.mixin.*
@@ -150,18 +152,6 @@ class GoogleAnalyticsAsyncTests {
         assert  ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
         assert  ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
         assert  ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
-    }
-
-    void "test trackPageView by default does not load jqueryDomReady"() {
-        setConfigVariables([enabled: true])
-
-        assert !tagLib.trackPageviewAsynch().contains('$(function() {')
-    }
-
-    void "test trackPageView load when dom is ready"() {
-        setConfigVariables([enabled: true, jQueryDomReady: true ])
-
-        assert tagLib.trackPageviewAsynch().contains('$(function() {')
     }
 
     private setEnvironment(environment) {

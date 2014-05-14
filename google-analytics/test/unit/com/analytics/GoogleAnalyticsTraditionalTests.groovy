@@ -1,3 +1,5 @@
+package com.analytics
+
 import grails.test.*
 import grails.util.Environment
 import grails.test.mixin.*

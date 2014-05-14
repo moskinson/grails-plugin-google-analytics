@@ -1,3 +1,5 @@
+package com.analytics
+
 import grails.util.Environment
 import grails.util.Holders
 
@@ -26,7 +28,7 @@ class GoogleAnalyticsTagLib {
             out << """
 <script type="text/javascript">
     var _gaq = _gaq || [];
-    ${loadWithJQueryRomReady()}
+    
     _gaq.push(['_setAccount', '${webPropertyID()}']);"""
             
             def customTrackingCode = attrs?.customTrackingCode ?: trackingCode()
@@ -67,8 +69,8 @@ class GoogleAnalyticsTagLib {
     _gaq.push(['_trackPageview']);"""
             }
 
-            out << """${closeLoadWithJQueryRomReady()}
-    $MAIN_TRACKING_CODE                    
+            out << """
+        $MAIN_TRACKING_CODE  
 </script>"""
         }
     }
@@ -114,15 +116,4 @@ class GoogleAnalyticsTagLib {
         Holders.config.google.analytics.customTrackingCode
     }
 
-    private loadWithJQueryRomReady(){
-        withJQueryDomReady()? '$(function() {' : ''
-    }
-
-    private closeLoadWithJQueryRomReady(){
-        withJQueryDomReady()? '});' : ''
-    }
-
-    private withJQueryDomReady(){
-        Holders.config.google.analytics.jQueryDomReady
-    }
 }
