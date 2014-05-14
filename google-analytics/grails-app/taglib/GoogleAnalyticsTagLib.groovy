@@ -1,4 +1,5 @@
 import grails.util.Environment
+import grails.util.Holders
 
 class GoogleAnalyticsTagLib {
 
@@ -11,11 +12,8 @@ class GoogleAnalyticsTagLib {
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();"""
 
-
-    def grailsApplication
-
     def trackPageview = { attrs ->
-        if (grailsApplication.config.google.analytics.traditional) {
+        if (Holders.config.google.analytics.traditional) {
             out << trackPageviewTraditional(attrs)
         }
         else {
@@ -105,15 +103,15 @@ class GoogleAnalyticsTagLib {
     }
 
     private webPropertyID() {
-        grailsApplication.config.google.analytics.webPropertyID
+        Holders.config.google.analytics.webPropertyID
     }
 
     private isEnabledByConfig(){
-        grailsApplication.config.google.analytics.enabled
+        Holders.config.google.analytics.enabled
     }
 
     private trackingCode(){
-        grailsApplication.config.google.analytics.customTrackingCode
+        Holders.config.google.analytics.customTrackingCode
     }
 
     private loadWithJQueryRomReady(){
@@ -125,6 +123,6 @@ class GoogleAnalyticsTagLib {
     }
 
     private withJQueryDomReady(){
-        grailsApplication.config.google.analytics.jQueryDomReady
+        Holders.config.google.analytics.jQueryDomReady
     }
 }

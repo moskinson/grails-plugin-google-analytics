@@ -2,14 +2,14 @@ import grails.test.*
 import grails.util.Environment
 import grails.test.mixin.*
 import org.junit.*
+import grails.util.Holders
 
 @TestFor(GoogleAnalyticsTagLib)
-class GoogleAnalyticsTagLibTests {
+class GoogleAnalyticsAsyncTests {
 	
-	// the web property id to execute the tests with
     static webPropertyID = "UA-123456-1"
 
-   static expectedAsynch = """
+    static expectedAsynch = """
 <script type="text/javascript">
     var _gaq = _gaq || [];
 
@@ -22,31 +22,14 @@ class GoogleAnalyticsTagLibTests {
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 </script>"""
-
-    static expectedTraditional = """<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var pageTracker = _gat._getTracker("${webPropertyID}");
-        pageTracker._trackPageview();
-    }
-    catch (err) {
-    }
-</script>"""
     
     def tagLib
 
     @Before
     void setUp(){
         tagLib = applicationContext.getBean(GoogleAnalyticsTagLib) 
-        tagLib.grailsApplication =  [ config: [:] ]
+        Holders.config = [:]
     }
-
-    // *****************************************************
-    // * ASYNCH TESTS
-    // *****************************************************
 
     void testTrackPageviewAsynchDefaultDisabledInDevelopment() {
         setEnvironment(Environment.DEVELOPMENT)
@@ -181,70 +164,6 @@ class GoogleAnalyticsTagLibTests {
         assert tagLib.trackPageviewAsynch().contains('$(function() {')
     }
 
-    // *****************************************************
-    // * TRADITIONAL TESTS
-    // *****************************************************
-
-    void testTrackPageviewDefaultDisabledInDevelopment() {
-        setEnvironment(Environment.DEVELOPMENT)
-        setConfigVariables()
-
-        assert tagLib.trackPageviewTraditional() == ""
-    }
-
-    void testTrackPageviewExplicitlyEnabledInDevelopment() {
-        setEnvironment(Environment.DEVELOPMENT)
-        setConfigVariables([enabled: true])
-
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
-    }
-
-    void testTrackPageviewDefaultDisabledInTest() {
-        setEnvironment(Environment.TEST)
-        setConfigVariables()
-
-        assert tagLib.trackPageviewTraditional() == ""
-    }
-
-    void testTrackPageviewExplicitlyEnabledInTest() {
-        setEnvironment(Environment.TEST)
-        setConfigVariables([enabled: true])
-
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
-    }
-
-    void testTrackPageviewDefaultEnabledInProduction() {
-        setEnvironment(Environment.PRODUCTION)
-        setConfigVariables()
-
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
-    }
-
-    void testTrackPageviewExplicitlyDisabledInProduction() {
-        setEnvironment(Environment.PRODUCTION)
-        setConfigVariables([enabled: false])
-
-        assert tagLib.trackPageviewTraditional() == ""
-    }
-
-    void testTrackPageviewEnabled() {
-        setConfigVariables([enabled: true])
-
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
-    }
-
-    void testTrackPageviewDisabled() {
-        setConfigVariables([enabled: false])
-
-        assert tagLib.trackPageviewTraditional() == ""
-    }
-
-    void testTrackPageviewNoWebPropertyIDButExplicitlyEnabled() {
-        setConfigVariables([enabled: true, webPropertyID: null ])
-
-        assert tagLib.trackPageviewTraditional() == ""
-    }
-
     private setEnvironment(environment) {
         Environment.metaClass.static.getCurrent = { ->
             return environment
@@ -252,7 +171,7 @@ class GoogleAnalyticsTagLibTests {
     }
 
     private setConfigVariables(customParams = [:]){
-        tagLib.grailsApplication.config = [ 
+        Holders.config = [ 
             google: [
                 analytics:[ webPropertyID : "${webPropertyID}"] + customParams
             ]]
