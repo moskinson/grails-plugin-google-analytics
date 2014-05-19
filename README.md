@@ -16,7 +16,7 @@ grails install-plugin google-analytics
 From Grails 2.0
 ```
 plugins {
-    compile ":google-analytics:2.3.1"
+    compile ":google-analytics:2.3.2"
 }
 ```
 
@@ -160,8 +160,9 @@ OR for universal customizing tracker object
 
 ## Version History
 
-* **2.3.1**
+* **2.3.2**
     * Customizing Tracking object for universal tracking code
+* **2.3.1**
     * Do not load more than once the main async script
 
 * **2.3.0**
