@@ -136,6 +136,10 @@ Note that you can also provide a similar List to the tag itself as in the other 
 ```
 <ga:trackPageview customTrackingCode="_gaq.push(['_setDetectFlash', false]); _gaq.push(['_trackPageview']); _gaq.push(['_trackPageLoadTime']);" />
 ```
+OR for universal customizing tracker object
+```
+<ga:trackPageviewUniversal customTrackingCode="ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});" />
+```
 
 #### DEPRECATED: Custom to use Jquery for load GA when DOM is ready. Avoid bad position of ga tag ,such before css and JS making the site load with errors and slowly. (old version support, by default do not use dom ready)
 ```
