@@ -36,7 +36,7 @@ google.analytics.webPropertyID = "UA-xxxxxx-x"
 google.analytics.webPropertyID = [ "UA-xxxxxx-x", "UA-xxxxxx-2", ""UA-xxxxxx-3" ] 
 ```
 
-##### Setup your Web Property ID dynamically setting up as a tag attribute (Always a Web Property ID must be configure in the Config.groovy)
+##### Setup your Web Property ID directly in tag (Always a Web Property ID must be configured in the Config.groovy)
 ```
 <ga:trackPageview webPropertyID="UA-xxxxxx-x" />
 ```
@@ -150,7 +150,7 @@ Note that you can also provide a similar List to the tag itself as in the other 
 ## Version History
 * **2.2.0**
     * Support for a list of Web property ID in the Config.groovy
-    * Support for set up the Web property ID in the tag(Always a Web Property ID must be configure in the Config.groovy)
+    * Support for set up the Web property ID in the tag(Always a Web Property ID must be configured in the Config.groovy)
     * Delete support for load tracking code when JqueryDom is ready
     * Delete support for add custom var when JqueryDom is ready
 
