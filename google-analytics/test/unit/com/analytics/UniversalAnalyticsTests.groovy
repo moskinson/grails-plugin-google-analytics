@@ -92,19 +92,6 @@ class UniversalAnalyticsTests {
         assert tagLib.trackPageviewUniversal() == ""
     }
 
-    void testTrackPageviewUniversalWithWebPropertyIDList() {
-        setConfigVariables([
-                        enabled : true, 
-                        webPropertyID: ['UA-123456-1','UA-123456-2','UA-123456-3']
-                            ])
-
-        def ga_tracking_code = tagLib.trackPageviewUniversal()
-
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-1', 'auto');")
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-2', 'auto');")
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-3', 'auto');")
-    }
-
     void testTrackPageviewUniversalWithWebPropertyIDAsAttributte() {
         setConfigVariables([
                         enabled : true, 
@@ -114,6 +101,15 @@ class UniversalAnalyticsTests {
         def ga_tracking_code = tagLib.trackPageviewUniversal( webPropertyID: 'UA-123456-2')
 
         assert ga_tracking_code.contains("ga('create', 'UA-123456-2', 'auto');")
+    }
+
+    void testTrackPageviewUniversalCustomTrackingCodeAsStringAttr() {
+        
+        setConfigVariables([enabled : true])
+
+        def ga_tracking_code = tagLib.trackPageviewUniversal(customTrackingCode: "{'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000}").toString()
+         
+        assert  ga_tracking_code.contains("ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});")
     }
 
     private setEnvironment(environment) {

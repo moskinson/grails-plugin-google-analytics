@@ -43,10 +43,10 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
         
         if (isEnabled()){
             if (attrs?.webPropertyID){
-                renderUniversalTrackingCodeFor(attrs.webPropertyID)
+                renderUniversalTrackingCodeFor(attrs.customTrackingCode)(attrs.webPropertyID)
             }
             else{
-                forEachWebPropertyIdDo(renderUniversalTrackingCodeFor)
+                forEachWebPropertyIdDo(renderUniversalTrackingCodeFor(attrs.customTrackingCode))
             }
         }
     }
@@ -84,10 +84,19 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
     """
         }
 
-        out << render (template: '/asyncTrackingCode',
-                       plugin: 'google-analytics')
+        renderGoogleAnalyticsAsyncTrackingCode()
+
         out << """
 </script>"""
+
+        }
+    }
+
+    private renderGoogleAnalyticsAsyncTrackingCode(){
+        if (!pageScope.renderAsyncTrackingCode){
+            pageScope.renderAsyncTrackingCode = true
+            out << render (template: '/asyncTrackingCode',
+                       plugin: 'google-analytics')
         }
     }
 
@@ -136,10 +145,16 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
                 }
     }
 
-    private renderUniversalTrackingCodeFor = { web_property_id ->
-        out << render (template: '/universalTrackingCode',
-                       plugin: 'google-analytics',
-                       model: [webPropertyID: web_property_id])
+    private renderUniversalTrackingCodeFor(custom_tracking_code){
+        return { web_property_id ->
+
+                    out << render (template: '/universalTrackingCode',
+                               plugin: 'google-analytics',
+                               model: [
+                                        webPropertyID: web_property_id,
+                                        custom_tracking_code: custom_tracking_code
+                                        ])
+        }
     }
 
     private trackingCode(){
