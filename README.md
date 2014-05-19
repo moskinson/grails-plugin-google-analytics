@@ -155,6 +155,11 @@ Note that you can also provide a similar List to the tag itself as in the other 
 
 
 ## Version History
+
+* **2.3.1**
+    * Customizing Tracking object for universal tracking code
+    * Do not load more than once the main async script
+
 * **2.3.0**
     * Added Universal Analytics Tracking support
 
