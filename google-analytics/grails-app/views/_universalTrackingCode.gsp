@@ -4,7 +4,12 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', '${webPropertyID}', ${custom_tracking_code?custom_tracking_code:"'auto'"});
+  <g:if test="${custom_tracking_code}">
+  ga('create', '${webPropertyID}', ${custom_tracking_code});
+  </g:if>
+  <g:else>
+  ga('create', '${webPropertyID}', 'auto');
+  </g:else>
   ga('send', 'pageview');
 
 </script>

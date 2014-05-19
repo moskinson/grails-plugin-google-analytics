@@ -1,5 +1,5 @@
 class GoogleAnalyticsGrailsPlugin {
-    def version = "2.3.1"
+    def version = "2.3.2"
     def grailsVersion = "2.0 > *"
     def dependsOn = [:]
 
