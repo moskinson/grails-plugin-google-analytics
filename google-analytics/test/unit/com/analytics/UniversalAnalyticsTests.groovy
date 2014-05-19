@@ -18,7 +18,7 @@ class UniversalAnalyticsTests {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', '${webPropertyID}');
+  ga('create', '${webPropertyID}', 'auto');
   ga('send', 'pageview');
 
 </script>"""
@@ -100,9 +100,9 @@ class UniversalAnalyticsTests {
 
         def ga_tracking_code = tagLib.trackPageviewUniversal()
 
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-1');")
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-2');")
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-3');")
+        assert ga_tracking_code.contains("ga('create', 'UA-123456-1', 'auto');")
+        assert ga_tracking_code.contains("ga('create', 'UA-123456-2', 'auto');")
+        assert ga_tracking_code.contains("ga('create', 'UA-123456-3', 'auto');")
     }
 
     void testTrackPageviewUniversalWithWebPropertyIDAsAttributte() {
@@ -113,7 +113,7 @@ class UniversalAnalyticsTests {
 
         def ga_tracking_code = tagLib.trackPageviewUniversal( webPropertyID: 'UA-123456-2')
 
-        assert ga_tracking_code.contains("ga('create', 'UA-123456-2');")
+        assert ga_tracking_code.contains("ga('create', 'UA-123456-2', 'auto');")
     }
 
     private setEnvironment(environment) {
