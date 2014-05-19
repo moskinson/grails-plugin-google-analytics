@@ -16,7 +16,7 @@ grails install-plugin google-analytics
 From Grails 2.0
 ```
 plugins {
-    compile ":google-analytics:2.3.0"
+    compile ":google-analytics:2.3.1"
 }
 ```
 
