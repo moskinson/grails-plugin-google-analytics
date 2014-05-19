@@ -16,7 +16,7 @@ grails install-plugin google-analytics
 From Grails 2.0
 ```
 plugins {
-    compile ":google-analytics:2.2.0"
+    compile ":google-analytics:2.3.0"
 }
 ```
 
@@ -99,6 +99,14 @@ For traditional tracking code, make sure you put the tag just before the closing
 
 Note that the plugin also offers <ga:trackPageviewAsynch /> and <ga:trackPageviewTraditional /> tags to use the type of tracking code explicitly. This is mainly for backwards compatibility as the <ga:trackPageviewAsynch /> was needed for asynchronous tracking code prior to version 1.0 of this plugin.
 
+## Universal Analytics tracking code
+
+If you want to use the Universal Analytics tracking code use this tag. It support enabled by Config.groovy, get Web Property Id from Config.groovy or directly set as an attribute.
+
+```
+<ga:trackPageviewUniversal />
+```
+
 ## Tracking Customizations
 
 If you want to customize the tracking code you can either provide the customization in grails-app/config/Config.groovy or in the tag itself. The customization can be a String of javascript code or a smart List with tracking code. The examples below speak for themselves.
@@ -144,10 +152,12 @@ Note that you can also provide a similar List to the tag itself as in the other 
 
 ## TO DO
 * Improve custom vars, control slots usage...
-* Support for universal analytics code
 
 
 ## Version History
+* **2.3.0**
+    * Added Universal Analytics Tracking support
+
 * **2.2.0**
     * Support for a list of Web property ID in the Config.groovy
     * Support for set up the Web property ID in the tag(Always a Web Property ID must be configured in the Config.groovy)
