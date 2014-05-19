@@ -1,5 +1,5 @@
 class GoogleAnalyticsGrailsPlugin {
-    def version = "2.2.0"
+    def version = "2.3.0"
     def grailsVersion = "2.0 > *"
     def dependsOn = [:]
 
@@ -15,7 +15,7 @@ class GoogleAnalyticsGrailsPlugin {
 
     def scm = [ url: "https://github.com/moskinson/grails-plugin-google-analytics" ]
     def description = '''
-                Include google analyics script, async and traditional
+                Include google analytics script: Async, Traditional and Universal.
                 Add custom vars
     '''
 
