@@ -153,8 +153,10 @@ OR for universal customizing tracker object
 ```
 
 #### Use UA custom dimension
+The custom dimension must be declared before the trackPageView for set it before the track page view is sent to UA
 ```
     <ua:customDimension slot="3" dimension_value="someValue" />
+    <ua:trackPageView />
 ```
 
 

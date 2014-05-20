@@ -1,4 +1,4 @@
-<plugin name='google-analytics' version='2.3.2' grailsVersion='2.0 &gt; *'>
+<plugin name='google-analytics' version='2.3.3' grailsVersion='2.0 &gt; *'>
   <author>Marcel Overdijk</author>
   <authorEmail>marceloverdijk@gmail.com</authorEmail>
   <title>Grails Google Analytics Plugin</title>
@@ -11,6 +11,7 @@
   <resources>
     <resource>com.analytics.GoogleAnalyticsCustomVarsTagLib</resource>
     <resource>com.analytics.GoogleAnalyticsTagLib</resource>
+    <resource>com.analytics.UniversalAnalyticsTagLib</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
