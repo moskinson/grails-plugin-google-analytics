@@ -4,9 +4,9 @@ import grails.util.Holders
 
 class UniversalAnalyticsTagLib extends BaseTagLib {
 
-    static namespace = "ga"
+    static namespace = "ua"
     
-    def trackPageviewUniversal = { attrs ->
+    def trackPageview = { attrs ->
         
         if (isEnabled()){
             if (attrs?.webPropertyID){
@@ -21,8 +21,8 @@ class UniversalAnalyticsTagLib extends BaseTagLib {
     def customDimension = { attrs ->
 
         if (isEnabled()) {
-            pageScope["dimension${attrs?.slot_index}"] = [   
-                                                    slot_index: attrs?.slot_index,
+            pageScope["dimension${attrs?.slot}"] = [   
+                                                    slot: attrs?.slot,
                                                     dimension_value:  attrs?.dimension_value
                                                 ]
         }

@@ -38,14 +38,14 @@ class UniversalAnalyticsTests {
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables()
 
-        assert tagLib.trackPageviewUniversal() == ""
+        assert tagLib.TrackPageview() == ""
     }
 
     void testTrackPageviewUniversalExplicitlyEnabledInDevelopment() {
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables([enabled : true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewUniversal().toString()) == deleteBlankSpaces(expectedAsynch)
+        assert deleteBlankSpaces(tagLib.trackPageview().toString()) == deleteBlankSpaces(expectedAsynch)
 
     }
 
@@ -53,46 +53,46 @@ class UniversalAnalyticsTests {
         setEnvironment(Environment.TEST)
         setConfigVariables()
 
-        assert tagLib.trackPageviewUniversal() == ""
+        assert tagLib.trackPageview() == ""
     }
 
     void testTrackPageviewUniversalExplicitlyEnabledInTest() {
         setEnvironment(Environment.TEST)
         setConfigVariables([enabled : true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewUniversal().toString()) == deleteBlankSpaces(expectedAsynch)
+        assert deleteBlankSpaces(tagLib.trackPageview().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewUniversalDefaultEnabledInProduction() {
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables()
 
-        assert deleteBlankSpaces(tagLib.trackPageviewUniversal().toString()) == deleteBlankSpaces(expectedAsynch)
+        assert deleteBlankSpaces(tagLib.trackPageview().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewUniversalExplicitlyDisabledInProduction() {
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables([enabled : false])
 
-        assert tagLib.trackPageviewUniversal() == ""
+        assert tagLib.trackPageview() == ""
     }
 
     void testTrackPageviewUniversalEnabled() {
         setConfigVariables([enabled : true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewUniversal().toString()) == deleteBlankSpaces(expectedAsynch)
+        assert deleteBlankSpaces(tagLib.trackPageview().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewUniversalDisabled() {
         setConfigVariables([enabled : false])
 
-        assert tagLib.trackPageviewUniversal() == ""
+        assert tagLib.trackPageview() == ""
     }
 
     void testTrackPageviewUniversalNoWebPropertyIDButExplicitlyEnabled() {
         setConfigVariables([enabled : true, webPropertyID: null])
 
-        assert tagLib.trackPageviewUniversal() == ""
+        assert tagLib.trackPageview() == ""
     }
 
     void testTrackPageviewUniversalWithWebPropertyIDAsAttributte() {
@@ -101,7 +101,7 @@ class UniversalAnalyticsTests {
                         webPropertyID: ['UA-123456-1']
                             ])
 
-        def ga_tracking_code = tagLib.trackPageviewUniversal( webPropertyID: 'UA-123456-2')
+        def ga_tracking_code = tagLib.trackPageview( webPropertyID: 'UA-123456-2')
 
         assert ga_tracking_code.contains("ga('create', 'UA-123456-2', 'auto');")
     }
@@ -110,7 +110,7 @@ class UniversalAnalyticsTests {
         
         setConfigVariables([enabled : true])
 
-        def ga_tracking_code = tagLib.trackPageviewUniversal(customTrackingCode: "{'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000}").toString()
+        def ga_tracking_code = tagLib.trackPageview(customTrackingCode: "{'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000}").toString()
          
         assert  ga_tracking_code.contains("ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});")
     }
@@ -119,10 +119,10 @@ class UniversalAnalyticsTests {
         
         setConfigVariables([enabled : true])
 
-        tagLib.customDimension(slot_index: "1",dimension_value: "some value").toString()
-        def ga_tracking_code = tagLib.trackPageviewUniversal()
+        tagLib.customDimension(slot: "1",dimension_value: "some value").toString()
+        def ga_tracking_code = tagLib.trackPageview()
         
-        assert  pageScope['dimension1'] == [slot_index: "1",dimension_value:"some value"]
+        assert  pageScope['dimension1'] == [slot: "1",dimension_value:"some value"]
         assert  ga_tracking_code.contains("ga('set', 'dimension1', 'some value');")
     }
 

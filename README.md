@@ -104,7 +104,7 @@ Note that the plugin also offers <ga:trackPageviewAsynch /> and <ga:trackPagevie
 If you want to use the Universal Analytics tracking code use this tag. It support enabled by Config.groovy, get Web Property Id from Config.groovy or directly set as an attribute.
 
 ```
-<ga:trackPageviewUniversal />
+<ua:trackPageview />
 ```
 
 ## Tracking Customizations
@@ -138,7 +138,7 @@ Note that you can also provide a similar List to the tag itself as in the other 
 ```
 OR for universal customizing tracker object
 ```
-<ga:trackPageviewUniversal customTrackingCode="ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});" />
+<ua:trackPageview customTrackingCode="ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});" />
 ```
 
 #### DEPRECATED: Custom to use Jquery for load GA when DOM is ready. Avoid bad position of ga tag ,such before css and JS making the site load with errors and slowly. (old version support, by default do not use dom ready)
@@ -152,6 +152,10 @@ OR for universal customizing tracker object
 	<ga:customVar slot="4" var_name="test" var_value="wrong" scope="3" />
 ```
 
+#### Use UA custom dimension
+```
+    <ua:customDimension slot="3" dimension_value="someValue" />
+```
 
 
 ## TO DO
@@ -162,6 +166,7 @@ OR for universal customizing tracker object
 
 * **2.3.3**
     * Added to Universal Analytics Custom Dimensions
+    * Migrated namespace for Universal Analytics tag to ua instead ga
 
 * **2.3.2**
     * Customizing Tracking object for universal tracking code
