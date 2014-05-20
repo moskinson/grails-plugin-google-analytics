@@ -38,7 +38,7 @@ class UniversalAnalyticsTests {
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables()
 
-        assert tagLib.TrackPageview() == ""
+        assert tagLib.trackPageview() == ""
     }
 
     void testTrackPageviewUniversalExplicitlyEnabledInDevelopment() {
