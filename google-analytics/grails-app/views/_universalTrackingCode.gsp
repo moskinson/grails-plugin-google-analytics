@@ -10,6 +10,9 @@
   <g:else>
   ga('create', '${webPropertyID}', 'auto');
   </g:else>
+  <g:each var="customDimension" in="${customDimensions}">
+  ga('set', 'dimension${customDimension.slot_index}', '${customDimension.dimension_value}');
+  </g:each>
   ga('send', 'pageview');
 
 </script>

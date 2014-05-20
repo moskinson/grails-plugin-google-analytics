@@ -39,31 +39,6 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
         }
     }
 
-    def trackPageviewUniversal = { attrs ->
-        
-        if (isEnabled()){
-            if (attrs?.webPropertyID){
-                renderUniversalTrackingCodeFor(attrs.customTrackingCode)(attrs.webPropertyID)
-            }
-            else{
-                forEachWebPropertyIdDo(renderUniversalTrackingCodeFor(attrs.customTrackingCode))
-            }
-        }
-    }
-
-    private forEachWebPropertyIdDo(closure){
-
-        if (webPropertyID() instanceof List){
-
-            webPropertyID().each{ web_property_id ->
-                closure(web_property_id)
-            }
-        }
-        else{
-            closure(webPropertyID())
-        }
-    }
-
     private renderAsyncTrackingCodeFor(attrs){
 
         return { web_property_id ->
@@ -143,18 +118,6 @@ class GoogleAnalyticsTagLib extends BaseTagLib {
     _gaq.push(['${it}']);"""
                     }
                 }
-    }
-
-    private renderUniversalTrackingCodeFor(custom_tracking_code){
-        return { web_property_id ->
-
-                    out << render (template: '/universalTrackingCode',
-                               plugin: 'google-analytics',
-                               model: [
-                                        webPropertyID: web_property_id,
-                                        custom_tracking_code: custom_tracking_code
-                                        ])
-        }
     }
 
     private trackingCode(){

@@ -22,6 +22,19 @@ public class BaseTagLib {
         return isEnabledByConfig()
     }
 
+    def forEachWebPropertyIdDo(closure){
+
+        if (webPropertyID() instanceof List){
+
+            webPropertyID().each{ web_property_id ->
+                closure(web_property_id)
+            }
+        }
+        else{
+            closure(webPropertyID())
+        }
+    }
+
     private isInvalidEnabledByConfig(){
         !(isEnabledByConfig() instanceof Boolean)
     }
