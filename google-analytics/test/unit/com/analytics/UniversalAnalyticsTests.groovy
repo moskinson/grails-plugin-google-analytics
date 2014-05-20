@@ -6,7 +6,7 @@ import grails.test.mixin.*
 import org.junit.*
 import grails.util.Holders
 
-@TestFor(GoogleAnalyticsTagLib)
+@TestFor(UniversalAnalyticsTagLib)
 class UniversalAnalyticsTests {
 	
     static webPropertyID = "UA-123456-1"
@@ -21,6 +21,7 @@ class UniversalAnalyticsTests {
 
   ga('create', '${webPropertyID}', 'auto');
 
+
   ga('send', 'pageview');
 
 </script>"""
@@ -29,7 +30,7 @@ class UniversalAnalyticsTests {
 
     @Before
     void setUp(){
-        tagLib = applicationContext.getBean(GoogleAnalyticsTagLib) 
+        tagLib = applicationContext.getBean(UniversalAnalyticsTagLib) 
         Holders.config = [:]
     }
 
@@ -112,6 +113,17 @@ class UniversalAnalyticsTests {
         def ga_tracking_code = tagLib.trackPageviewUniversal(customTrackingCode: "{'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000}").toString()
          
         assert  ga_tracking_code.contains("ga('create', 'UA-123456-1', {'cookieDomain': 'foo.example.com','cookieName': 'myNewName','cookieExpires': 20000});")
+    }
+
+    void testCustomDomainsInUniversalAreRenderBeforePageview() {
+        
+        setConfigVariables([enabled : true])
+
+        tagLib.customDimension(slot_index: "1",dimension_value: "some value").toString()
+        def ga_tracking_code = tagLib.trackPageviewUniversal()
+        
+        assert  pageScope['dimension1'] == [slot_index: "1",dimension_value:"some value"]
+        assert  ga_tracking_code.contains("ga('set', 'dimension1', 'some value');")
     }
 
     private setEnvironment(environment) {
