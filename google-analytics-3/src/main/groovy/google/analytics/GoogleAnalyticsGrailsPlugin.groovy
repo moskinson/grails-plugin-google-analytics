@@ -3,68 +3,26 @@ package google.analytics
 import grails.plugins.*
 
 class GoogleAnalyticsGrailsPlugin extends Plugin {
+    def version = "2.3.3"
+    def grailsVersion = "2.0 > *"
+    def dependsOn = [:]
 
-    // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.2.8 > *"
-    // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
+    def license = "APACHE"
+    def title = "Grails Google Analytics Plugin" 
+    def author = "Marcel Overdijk"
+    def authorEmail = "marceloverdijk@gmail.com"
+    def developers = [
+            [ name: "Javier Moscardó", email: "moskinson@gmail.com" ] ]
 
-    // TODO Fill in these fields
-    def title = "Google Analytics" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
-    def description = '''\
-Brief summary/description of the plugin.
-'''
-    def profiles = ['web']
+    def scm = [ url: "https://github.com/moskinson/grails-plugin-google-analytics" ]
+    def description = '''
+                Include google analytics script: Async, Traditional and Universal.
+                Add custom vars
+    '''
 
-    // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/google-analytics"
 
-    // Extra (optional) plugin metadata
-
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
-
-    // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
-
-    // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
-
-    // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
-
-    // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
-
-    Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
-        }
-    }
-
-    void doWithDynamicMethods() {
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
-
-    void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
-    }
-
-    void onChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    void onShutdown(Map<String, Object> event) {
-        // TODO Implement code that is executed when the application shuts down (optional)
-    }
 }
