@@ -1,14 +1,14 @@
 package com.analytics
 
-import grails.test.*
+import grails.test.mixin.TestFor
 import grails.util.Environment
-import grails.test.mixin.*
-import org.junit.*
 import grails.util.Holders
+import org.grails.config.PropertySourcesConfig
+import spock.lang.Specification
 
 @TestFor(GoogleAnalyticsTagLib)
-class GoogleAnalyticsAsyncTests {
-	
+class GoogleAnalyticsAsyncTests extends Specification {
+
     static webPropertyID = "UA-123456-1"
 
     static expectedAsynch = """
@@ -17,181 +17,206 @@ class GoogleAnalyticsAsyncTests {
 
     _gaq.push(['_setAccount', '${webPropertyID}']);
     _gaq.push(['_trackPageview']);
-    
+
     (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
 </script>"""
-    
-    def tagLib
 
-    @Before
-    void setUp(){
-        tagLib = applicationContext.getBean(GoogleAnalyticsTagLib) 
-        Holders.config = [:]
+
+    def setup() {
+        setConfigVariables()
     }
 
     void testTrackPageviewAsynchDefaultDisabledInDevelopment() {
+        given:
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables()
 
-        assert tagLib.trackPageviewAsynch() == ""
+        expect:
+        tagLib.trackPageviewAsynch() == ""
     }
 
     void testTrackPageviewAsynchExplicitlyEnabledInDevelopment() {
+        given:
         setEnvironment(Environment.DEVELOPMENT)
-        setConfigVariables([enabled : true])
+        setConfigVariables([enabled: true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
+        expect:
+        deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
 
     }
 
     void testTrackPageviewAsynchDefaultDisabledInTest() {
+        given:
         setEnvironment(Environment.TEST)
         setConfigVariables()
 
-        assert tagLib.trackPageviewAsynch() == ""
+        expect:
+        tagLib.trackPageviewAsynch() == ""
     }
 
     void testTrackPageviewAsynchExplicitlyEnabledInTest() {
+        given:
         setEnvironment(Environment.TEST)
-        setConfigVariables([enabled : true])
+        setConfigVariables([enabled: true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
+        expect:
+        deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchDefaultEnabledInProduction() {
+        given:
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables()
 
-        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
+        expect:
+        deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchExplicitlyDisabledInProduction() {
+        given:
         setEnvironment(Environment.PRODUCTION)
-        setConfigVariables([enabled : false])
+        setConfigVariables([enabled: false])
 
-        assert tagLib.trackPageviewAsynch() == ""
+        expect:
+        tagLib.trackPageviewAsynch() == ""
     }
 
     void testTrackPageviewAsynchEnabled() {
-        setConfigVariables([enabled : true])
+        given:
+        setConfigVariables([enabled: true])
 
-        assert deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
+        expect:
+        deleteBlankSpaces(tagLib.trackPageviewAsynch().toString()) == deleteBlankSpaces(expectedAsynch)
     }
 
     void testTrackPageviewAsynchDisabled() {
-        setConfigVariables([enabled : false])
+        given:
+        setConfigVariables([enabled: false])
 
-        assert tagLib.trackPageviewAsynch() == ""
+        expect:
+        tagLib.trackPageviewAsynch() == ""
     }
 
     void testTrackPageviewAsynchNoWebPropertyIDButExplicitlyEnabled() {
-        setConfigVariables([enabled : true, webPropertyID: null])
+        given:
+        setConfigVariables([enabled: true, webPropertyID: null])
 
-        assert tagLib.trackPageviewAsynch() == ""
+        expect:
+        tagLib.trackPageviewAsynch() == ""
     }
 
     void testTrackPageviewAsynchWithWebPropertyIDList() {
+        given:
         setConfigVariables([
-                        enabled : true, 
-                        webPropertyID: ['UA-123456-1','UA-123456-2','UA-123456-3']
-                            ])
+                enabled      : true,
+                webPropertyID: ['UA-123456-1', 'UA-123456-2', 'UA-123456-3']
+        ])
 
         def ga_tracking_code = tagLib.trackPageviewAsynch()
 
-        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-1']);")
-        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
-        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-3']);")
+
+        expect:
+        ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-1']);")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-3']);")
     }
 
     void testTrackPageviewAsynchWithWebPropertyIDAsAttributte() {
+        given:
         setConfigVariables([
-                        enabled : true, 
-                        webPropertyID: ['UA-123456-1']
-                            ])
+                enabled      : true,
+                webPropertyID: ['UA-123456-1']
+        ])
 
-        def ga_tracking_code = tagLib.trackPageviewAsynch( webPropertyID: 'UA-123456-2')
+        def ga_tracking_code = tagLib.trackPageviewAsynch(webPropertyID: 'UA-123456-2')
 
-        assert ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
+        expect:
+        ga_tracking_code.contains("_gaq.push(['_setAccount', 'UA-123456-2']);")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttr() {
-        
-        setConfigVariables([enabled : true])
+        given:
+        setConfigVariables([enabled: true])
 
         def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString()
-         
 
-        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
-        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
-        assert  ga_tracking_code.contains("customTrackingCode();")
+
+        expect:
+        ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        ga_tracking_code.contains("customTrackingCode();")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsListAttr() {
-        
-        setConfigVariables([enabled : true])
+        given:
+        setConfigVariables([enabled: true])
 
         def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString()
 
-        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
-        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
-        assert  ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
-        assert  ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
+        expect:
+        ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
+        ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
+        ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
+        ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
+        ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsStringAttrInConfig() {
-        
-        setConfigVariables([enabled : true, customTrackingCode : "customTrackingCode();"])
+        given:
+        setConfigVariables([enabled: true, customTrackingCode: "customTrackingCode();"])
 
         def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: "customTrackingCode();").toString()
 
-        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
-        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
-        assert  ga_tracking_code.contains("customTrackingCode();")
+        expect:
+        ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        ga_tracking_code.contains("customTrackingCode();")
     }
 
     void testTrackPageviewAsynchCustomTrackingCodeAsListAttrInConfig() {
-        
-        setConfigVariables([enabled : true,
-                            customTrackingCode : [
-                                        _setDetectFlash: true,
-                                        _setDetectFlash: false,
-                                        _setCampaignCookieTimeout: 31536000000,
-                                        'custom': 'value',
-                                        _trackPageview: null
-                                    ]])
-        
+        given:
+        setConfigVariables([enabled           : true,
+                            customTrackingCode: [
+                                    _setDetectFlash          : true,
+                                    _setDetectFlash          : false,
+                                    _setCampaignCookieTimeout: 31536000000,
+                                    'custom'                 : 'value',
+                                    _trackPageview           : null
+                            ]])
+
         def ga_tracking_code = tagLib.trackPageviewAsynch(customTrackingCode: [[_setClientInfo: true], [_setDetectFlash: false], [_setCampaignCookieTimeout: 31536000000], ["custom": "value"], "_trackPageview"]).toString()
 
-        assert  ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
-        assert  ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
-        assert  ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
-        assert  ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
-        assert  ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
+        expect:
+        ga_tracking_code.contains("ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';")
+        ga_tracking_code.contains("_gaq.push(['_setAccount', '${webPropertyID}']);")
+        ga_tracking_code.contains("_gaq.push(['_setClientInfo', true]);")
+        ga_tracking_code.contains("_gaq.push(['_setDetectFlash', false]);")
+        ga_tracking_code.contains("_gaq.push(['_setCampaignCookieTimeout', 31536000000]);")
+        ga_tracking_code.contains("_gaq.push(['custom', 'value']);")
+        ga_tracking_code.contains("_gaq.push(['_trackPageview']);")
     }
 
-    private setEnvironment(environment) {
+    def setEnvironment(environment) {
         Environment.metaClass.static.getCurrent = { ->
             return environment
         }
     }
 
-    private setConfigVariables(customParams = [:]){
-        Holders.config = [ 
-            google: [
-                analytics:[ webPropertyID : "${webPropertyID}"] + customParams
-            ]]
+    def setConfigVariables(customParams = [:]) {
+        def config = [
+                google: [
+                        analytics: [webPropertyID: "${webPropertyID}"] + customParams
+                ]]
+        Holders.config = new PropertySourcesConfig(config)
     }
-    
-    private deleteBlankSpaces(text_to_clean){
-        text_to_clean.trim().replace(' ','')
+
+    def deleteBlankSpaces(text_to_clean) {
+        text_to_clean.trim().replace(' ', '')
     }
 }

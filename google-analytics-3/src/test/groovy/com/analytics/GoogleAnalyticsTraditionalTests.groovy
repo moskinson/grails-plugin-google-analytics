@@ -1,13 +1,13 @@
 package com.analytics
 
-import grails.test.*
+import grails.test.mixin.TestFor
 import grails.util.Environment
-import grails.test.mixin.*
-import org.junit.*
 import grails.util.Holders
+import org.grails.config.PropertySourcesConfig
+import spock.lang.Specification
 
 @TestFor(GoogleAnalyticsTagLib)
-class GoogleAnalyticsTraditionalTests {
+class GoogleAnalyticsTraditionalTests extends Specification {
 	
     static webPropertyID = "UA-123456-1"
 
@@ -24,75 +24,90 @@ class GoogleAnalyticsTraditionalTests {
     }
 </script>"""
     
-    def tagLib
-
-    @Before
-    void setUp(){
-        tagLib = applicationContext.getBean(GoogleAnalyticsTagLib) 
-        Holders.config = [:]
+    void setup(){
+        setConfigVariables()
     }
 
     void testTrackPageviewDefaultDisabledInDevelopment() {
+        given:
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables()
 
-        assert tagLib.trackPageviewTraditional() == ""
+        expect:
+        tagLib.trackPageviewTraditional() == ""
     }
 
     void testTrackPageviewExplicitlyEnabledInDevelopment() {
+        given:
         setEnvironment(Environment.DEVELOPMENT)
         setConfigVariables([enabled: true])
 
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
+        expect:
+        tagLib.trackPageviewTraditional().toString() == expectedTraditional
     }
 
     void testTrackPageviewDefaultDisabledInTest() {
+        given:
         setEnvironment(Environment.TEST)
         setConfigVariables()
 
-        assert tagLib.trackPageviewTraditional() == ""
+        expect:
+        tagLib.trackPageviewTraditional() == ""
     }
 
     void testTrackPageviewExplicitlyEnabledInTest() {
+        given:
         setEnvironment(Environment.TEST)
         setConfigVariables([enabled: true])
 
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
+        expect:
+        tagLib.trackPageviewTraditional().toString() == expectedTraditional
     }
 
     void testTrackPageviewDefaultEnabledInProduction() {
+        given:
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables()
 
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
+        expect:
+        tagLib.trackPageviewTraditional().toString() == expectedTraditional
     }
 
     void testTrackPageviewExplicitlyDisabledInProduction() {
+        given:
         setEnvironment(Environment.PRODUCTION)
         setConfigVariables([enabled: false])
 
-        assert tagLib.trackPageviewTraditional() == ""
+        expect:
+        tagLib.trackPageviewTraditional() == ""
     }
 
     void testTrackPageviewEnabled() {
+        given:
         setConfigVariables([enabled: true])
 
-        assert tagLib.trackPageviewTraditional().toString() == expectedTraditional
+        expect:
+        tagLib.trackPageviewTraditional().toString() == expectedTraditional
     }
 
     void testTrackPageviewDisabled() {
+        given:
         setConfigVariables([enabled: false])
 
-        assert tagLib.trackPageviewTraditional() == ""
+        expect:
+        tagLib.trackPageviewTraditional() == ""
     }
 
     void testTrackPageviewNoWebPropertyIDButExplicitlyEnabled() {
+        given:
         setConfigVariables([enabled: true, webPropertyID: null ])
 
-        assert tagLib.trackPageviewTraditional() == ""
+        expect:
+        tagLib.trackPageviewTraditional() == ""
     }
 
     void testTrackPageviewTraditionalWithWebPropertyIDList() {
+        given:
         setConfigVariables([
                         enabled : true, 
                         webPropertyID: ['UA-123456-1','UA-123456-2','UA-123456-3']
@@ -100,13 +115,15 @@ class GoogleAnalyticsTraditionalTests {
 
         def ga_tracking_code = tagLib.trackPageviewTraditional()
 
-        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-1");')
-        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
-        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-3");')
+        expect:
+        ga_tracking_code.contains('_gat._getTracker("UA-123456-1");')
+        ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
+        ga_tracking_code.contains('_gat._getTracker("UA-123456-3");')
     }
 
 
     void testTrackPageviewTraditionalWithWebPropertyIDAsAttributte() {
+        given:
         setConfigVariables([
                         enabled : true, 
                         webPropertyID: ['UA-123456-1']
@@ -114,7 +131,8 @@ class GoogleAnalyticsTraditionalTests {
 
         def ga_tracking_code = tagLib.trackPageviewTraditional( webPropertyID: 'UA-123456-2')
 
-        assert ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
+        expect:
+        ga_tracking_code.contains('_gat._getTracker("UA-123456-2");')
     }
 
     private setEnvironment(environment) {
@@ -123,11 +141,12 @@ class GoogleAnalyticsTraditionalTests {
         }
     }
 
-    private setConfigVariables(customParams = [:]){
-        Holders.config = [ 
-            google: [
-                analytics:[ webPropertyID : "${webPropertyID}"] + customParams
-            ]]
+    def setConfigVariables(customParams = [:]) {
+        def config = [
+                google: [
+                        analytics: [webPropertyID: "${webPropertyID}"] + customParams
+                ]]
+        Holders.config = new PropertySourcesConfig(config)
     }
     
     private deleteBlankSpaces(text_to_clean){
